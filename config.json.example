@@ -1,0 +1,13 @@
+{
+    "username": "...",
+    "password": "...",
+    "ip_provider": "https://ipv4.text.wtfismyip.com",
+    "domains": [
+        {
+            "name": "example.com",
+            "records": [
+                "foo", "bar", "baz"
+            ]
+        }
+    ]
+}
