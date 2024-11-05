@@ -3,7 +3,10 @@ import json
 import os
 import logging
 
-logging.basicConfig()
+logging.basicConfig(filename="updater.log",
+                    filemode='a',
+                    format='%(asctime)s,%(msecs)d %(name)s %(levelname)s %(message)s',
+                    datefmt='%H:%M:%S')
 _logger = logging.getLogger("RegRU ddns updater")
 _logger.setLevel(logging.INFO)
 
