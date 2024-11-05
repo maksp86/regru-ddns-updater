@@ -9,5 +9,6 @@
                 "foo", "bar", "baz"
             ]
         }
-    ]
+    ],
+    "log_level": "critical/error/warning/info/debug"
 }

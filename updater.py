@@ -14,22 +14,28 @@ REGRU_API_BASE = "https://api.reg.ru/api/regru2/"
 
 
 def checkIP(config) -> str | None:
-    res = requests.get(config["ip_provider"])
-    currentIPAddress = res.text.strip()
+    try:
+        res = requests.get(config["ip_provider"])
+        currentIPAddress = res.text.strip()
 
-    if os.path.exists(LAST_IP_FILE_PATH):
-        lastIPAddress = open(LAST_IP_FILE_PATH, "r").read().strip()
-    else:
-        lastIPAddress = None
+        if os.path.exists(LAST_IP_FILE_PATH):
+            lastIPAddress = open(LAST_IP_FILE_PATH, "r").read().strip()
+        else:
+            lastIPAddress = None
 
-    if lastIPAddress == currentIPAddress:
-        _logger.info("IP not changed, quitting")
-        exit(0)
-    else:
-        _logger.info("IP changed from %s to %s",
-                     lastIPAddress, currentIPAddress)
-        open(LAST_IP_FILE_PATH, "w").write(currentIPAddress)
-        return currentIPAddress
+        if lastIPAddress == currentIPAddress:
+            _logger.info("IP not changed, quitting")
+            exit(0)
+        else:
+            _logger.info("IP changed from %s to %s",
+                         lastIPAddress, currentIPAddress)
+            open(LAST_IP_FILE_PATH, "w").write(currentIPAddress)
+            return currentIPAddress
+    except Exception as e:
+        if isinstance(e, requests.exceptions.ConnectionError):
+            raise Exception("No internet connection, aborting.")
+        else:
+            raise e
 
 
 def tryLogin(config):
@@ -124,6 +130,9 @@ def main():
 
         config = json.load(open(CONFIG_FILE_PATH, "r"))
 
+        if "log_level" in config:
+            _logger.setLevel(str(config["log_level"]).upper())
+
         newIP = checkIP(config)
 
         tryLogin(config)
@@ -132,7 +141,7 @@ def main():
 
         processEditZone(config, newIP)
     except Exception as e:
-        _logger.critical(e, exc_info=True)
+        _logger.critical(e, exc_info=(_logger.level <= 10))
 
 
 if __name__ == "__main__":
