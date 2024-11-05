@@ -11,3 +11,7 @@
 "ip_provider": "..." // A URL of service that returns your external IP address in plain text format. 
 ...
 ```
+#### Sample Cron Job
+```
+*/5     *       *       *       *       cd /some/path/regru-ddns-updater && python3 updater.py
+```
